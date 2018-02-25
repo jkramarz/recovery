@@ -2,10 +2,10 @@
 - name: Check if DisplayLink driver is installed
   dnf:
     list: displaylink
-  register: atom_installed
+  register: displaylink_installed
 
 - name: Install DisplayLink driver
-  when: (displaylink.results | selectattr("repo", "equalto", "@System") | list | length) == 0
+  when: (displaylink_installed.results | selectattr("repo", "equalto", "@System") | list | length) == 0
   block:
     - name: Install build requirements
       dnf:
