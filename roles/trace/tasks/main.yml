@@ -1,0 +1,25 @@
+---
+- name: Install ltrace
+  dnf:
+    name: ltrace
+    state: present
+
+- name: Install strace
+  dnf:
+    name: strace
+    state: present
+
+- name: Install gdb
+  dnf:
+    name: gdb
+    state: present
+
+- name: Install valgrind
+  dnf:
+    name: valgrind
+    state: present
+
+- name: Install binwalk
+  dnf:
+    name: binwalk
+    state: present

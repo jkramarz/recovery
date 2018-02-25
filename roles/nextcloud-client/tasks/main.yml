@@ -1,0 +1,7 @@
+---
+- name: Install NextCloud client
+  dnf:
+    name:
+      - nextcloud-client
+      - nextcloud-client-nautilus
+    state: present

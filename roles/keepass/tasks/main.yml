@@ -1,0 +1,5 @@
+---
+- name: Install keepass
+  dnf:
+    name: keepass
+    state: present

@@ -1,0 +1,11 @@
+---
+- name: Create Docker group
+  group:
+    name: docker
+    state: present
+    system: yes
+
+- name: Install Docker
+  dnf:
+    name: docker
+    state: present

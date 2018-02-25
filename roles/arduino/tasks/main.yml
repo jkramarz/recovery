@@ -1,0 +1,30 @@
+---
+- name: Install Arduino IDE
+  dnf:
+    name: arduino
+    state: present
+
+- name: Configure Arduino IDE
+  become_user: '{{ user }}'
+  lineinfile:
+    path: '/home/{{ user }}/.arduino15/preferences.txt'
+    state: present
+    regexp: '^{{ item.key }}='
+    line: '{{ item.key }}={{ item.value }}'
+    create: yes
+  with_dict:
+    'programmer': 'arduino:usbasp'
+    'upload.verbose': 'true'
+    'build.verbose': 'true'
+    'editor.linenumbers': 'true'
+    'editor.code_folding': 'true'
+    'editor.code_folding': 'true'
+    'compiler.warning_level': 'default'
+
+- name: Add user to groups
+  user:
+    name: '{{ user }}'
+    groups:
+      - dialout
+      - lock
+    append: yes

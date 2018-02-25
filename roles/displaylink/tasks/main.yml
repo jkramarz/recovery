@@ -1,0 +1,34 @@
+---
+- name: Check if DisplayLink driver is installed
+  dnf:
+    list: displaylink
+  register: atom_installed
+
+- name: Install DisplayLink driver
+  when: (displaylink.results | selectattr("repo", "equalto", "@System") | list | length) == 0
+  block:
+    - name: Install build requirements
+      dnf:
+        name: libdrm-devel
+        state: present
+    - name: Clone displaylink-rpm repository
+      git:
+        depth: 1
+        repo: https://github.com/displaylink-rpm/displaylink-rpm.git
+        dest: /opt/displaylink-rpm
+        version: 093f121a0d53568fa8efa3d919c74f7d5f56c9c6
+    - name: Configure for out-of-tree EVDI version
+      make:
+        chdir: /opt/displaylink-rpm
+        target: devel
+        params:
+          EVDI_DEVEL_REPO: https://github.com/mintel/evdi.git
+          EVDI_DEVEL_BRANCH: devel
+    - name: Build package
+      make:
+        chdir: /opt/displaylink-rpm
+        target: x86_64/displaylink-1.5.0-2.x86_64.rpm
+    - name: Install package
+      dnf:
+        name: /opt/displaylink-rpm/x86_64/displaylink-1.5.0-2.x86_64.rpm
+        state: present

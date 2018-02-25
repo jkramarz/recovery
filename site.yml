@@ -1,0 +1,55 @@
+---
+- name: core
+  hosts: all
+  become: yes
+  roles:
+    - ansible
+    - base
+
+- name: sec
+  hosts: all
+  become: yes
+  roles:
+    - yubikey
+    - password-store
+    - nextcloud-client
+    - keepass
+
+- name: fun
+  hosts: all
+  become: yes
+  roles:
+    - google-chrome
+    - telegram
+    - slack
+    - spotify
+    - displaylink
+
+- name: dev
+  hosts: all
+  become: yes
+  roles:
+    - atom
+    - jetbrains-phpstorm
+    - docker
+
+- name: ops
+  hosts: all
+  become: yes
+  roles:
+    - trace
+    - network-tools
+    - apache-directory-studio
+    - dell-storage-manager
+    - remmina
+    - vagrant
+    - virtualbox
+    - rpm-utils
+
+- name: embedded
+  hosts: all
+  become: yes
+  roles:
+    - saleae-logic
+    - arduino
+    - rigol

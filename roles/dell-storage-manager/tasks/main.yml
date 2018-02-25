@@ -1,0 +1,37 @@
+---
+- name: Check if Dell EMC Storage Manager is installed
+  dnf:
+    list: dell-smclient
+  register: sm_installed
+
+- name: Install Dell EMC Storage Manager
+  when: (sm_installed.results | selectattr("repo", "equalto", "@System") | list | length) == 0
+  block:
+    - set_fact:
+        dsm_rpm_version: '{{ ".".join(dell_storage_manager_version.split(".")[0:3]) }}-{{ dell_storage_manager_version.split(".")[3] }}'
+        dsm_zip_name: 'DellEMCStorageManager-{{ dell_storage_manager_version }}.zip'
+    - set_fact:
+        dsm_url: 'https://downloads.dell.com/FOLDER04686045M/1/{{ dsm_zip_name }}'
+        dsm_rpm_name: 'dell-smclient-{{ dsm_rpm_version }}.x86_64.rpm'
+    - name: Download zip
+      get_url:
+        url: '{{ dsm_url }}'
+        dest: '/tmp/{{ dsm_zip_name }}'
+    - name: Unpack rpm
+      command: 'unzip {{ dsm_zip_name }} {{ dsm_rpm_name }}'
+      args:
+        chdir: /tmp
+        creates: '/tmp/{{ dsm_rpm_name }}'
+    - name: Install rpm
+      dnf:
+        name: '/tmp/{{ dsm_rpm_name }}'
+        state: present
+  always:
+    - name: Cleanup zip
+      file:
+        path: '/tmp/{{ dsm_zip_name }}'
+        state: absent
+    - name: Cleanup rpm
+      file:
+        path: '/tmp/{{ dsm_rpm_name }}'
+        state: absent

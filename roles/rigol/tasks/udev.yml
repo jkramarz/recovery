@@ -1,0 +1,27 @@
+---
+- name: Create usbtmc group
+  group:
+    name: usbtmc
+    state: present
+    system: yes
+
+- name: Configure udevd rules
+  copy:
+    dest: /lib/udev/rules.d/30-usbtmc.rules
+    content: |
+      ####################################################################################
+      # USBTMC instruments
+
+      # Rigol Technologies  DS1000Z series
+      SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="1ab1", ATTRS{idProduct}=="04ce", GROUP="usbtmc", MODE="0660"
+
+      # Devices
+      KERNEL=="usbtmc/*",       MODE="0660", GROUP="usbtmc"
+      KERNEL=="usbtmc[0-9]*",   MODE="0660", GROUP="usbtmc"
+
+- name: Add user to group
+  user:
+    name: '{{ user }}'
+    groups:
+      - usbtmc
+    append: yes

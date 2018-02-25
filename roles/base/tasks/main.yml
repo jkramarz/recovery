@@ -1,0 +1,15 @@
+---
+- name: Install vim
+  dnf:
+    name: vim-enhanced
+    state: present
+
+- name: Install screen
+  dnf:
+    name: screen
+    state: present
+
+- name: Install htop
+  dnf:
+    name: htop
+    state: present

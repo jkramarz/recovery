@@ -1,0 +1,5 @@
+---
+- name: Install DKMS
+  dnf:
+    name: dkms
+    state: present

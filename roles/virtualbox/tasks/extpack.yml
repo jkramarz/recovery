@@ -1,0 +1,26 @@
+---
+- name: Check VirtualBox version
+  shell: vboxmanage -v | grep -oP '([\d]+\.){2}[\d]+' | tail -n1
+  changed_when: false
+  register: virtualbox_revision
+
+- name: Check extpack version
+  shell: VBoxManage list extpacks | grep 'Oracle VM VirtualBox Extension Pack' -A 1 | tail -n1 | awk '{print $2}'
+  changed_when: false
+  register: virtualbox_extpack_version
+
+- name: Install extpack
+  when: '(virtualbox_revision.stdout | trim) != (virtualbox_extpack_version.stdout | trim)'
+  block:
+    - name: Download extpack
+      get_url:
+        url: https://download.virtualbox.org/virtualbox/{{ virtualbox_revision.stdout }}/Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_revision.stdout }}.vbox-extpack
+        dest: /tmp/Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_revision.stdout }}.vbox-extpack
+      register: virtualbox_extpack_downloaded
+    - name: Install extpack
+      shell: VBoxManage extpack install /tmp/Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_revision.stdout }}.vbox-extpack --accept-license={{ virtualbox_extpack_licence }}
+  always:
+    - name: Delete temporary file
+      file:
+        path: /tmp/Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_revision.stdout }}.vbox-extpack
+        state: absent

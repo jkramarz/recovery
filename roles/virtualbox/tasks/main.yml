@@ -1,0 +1,23 @@
+---
+- name: Configure VirtualBox repository
+  get_url:
+    url: https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
+    dest: /etc/yum.repos.d/virtualbox.repo
+
+- name: Import GPG key
+  rpm_key:
+    key: https://www.virtualbox.org/download/oracle_vbox.asc
+    state: present
+
+- name: Install VirtualBox
+  dnf:
+    name: VirtualBox-{{ virtualbox_version }}
+    state: present
+  register: virtualbox_install
+
+- name: Run vboxconfig
+  command: /sbin/vboxconfig
+  when: virtualbox_install | changed
+
+- include: extpack.yml
+  when: virtualbox_install_extpack

@@ -1,0 +1,63 @@
+---
+- name: Create logic group
+  group:
+    name: logic
+    state: present
+
+- name: Download and install Saleae Logic
+  unarchive:
+    remote_src: yes
+    src: http://downloads.saleae.com/logic/{{ saleae_logic_version }}/Logic%20{{ saleae_logic_version }}%20(64-bit).zip
+    dest: /opt/
+    creates: /opt/Logic {{ saleae_logic_version }} (64-bit)
+
+- name: Install Saleae drivers
+  command: ./install_driver.sh
+  args:
+    chdir: /opt/Logic {{ saleae_logic_version }} (64-bit)/Drivers/
+    creates: /etc/udev/rules.d/99-SaleaeLogic.rules
+
+- name: Grant permissions to logic group
+  file:
+    path: '/opt/Logic {{ saleae_logic_version }} (64-bit)/{{ item }}'
+    state: directory
+    group: logic
+    mode: '4770'
+  with_items:
+    - Calibration
+    - Databases
+    - Errors
+    - Settings
+
+- name: Allow running only by members of group
+  file:
+    path: '/opt/Logic {{ saleae_logic_version }} (64-bit)/Logic'
+    state: file
+    group: logic
+    mode: '0750'
+
+- name: Create Logic launcher
+  copy:
+    dest: /usr/share/applications/logic.desktop
+    content: |
+      [Desktop Entry]
+      Name=Logic
+      Comment=Saleae logic analyzer
+      GenericName=Logic Analyzer
+      Exec="/opt/Logic {{ saleae_logic_version }} (64-bit)/Logic"
+      Type=Application
+      StartupNotify=true
+      Categories=GNOME;GTK;
+      X-Desktop-File-Install-Version=0.23
+  register: logic_launcher
+
+- name: Install launcher
+  command: desktop-file-install /usr/share/applications/logic.desktop
+  when: logic_launcher | changed
+
+- name: Add user to groups
+  user:
+    name: '{{ user }}'
+    groups:
+      - logic
+    append: yes

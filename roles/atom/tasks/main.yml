@@ -1,0 +1,22 @@
+---
+- name: Check if Atom is installed
+  dnf:
+    list: atom
+  register: atom_installed
+
+- name: Install Atom
+  when: (atom_installed.results | selectattr("repo", "equalto", "@System") | list | length) == 0
+  block:
+    - name: Get package
+      get_url:
+        url: https://atom.io/download/rpm
+        dest: /tmp/atom.rpm
+    - name: Install package
+      dnf:
+        name: /tmp/atom.rpm
+        state: present
+  always:
+    - name: Cleanup
+      file:
+        path: /tmp/atom.rpm
+        state: absent

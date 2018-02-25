@@ -1,0 +1,4 @@
+---
+- include: udev.yml
+- include: ds1054z.yml
+- include: DSRemote.yml

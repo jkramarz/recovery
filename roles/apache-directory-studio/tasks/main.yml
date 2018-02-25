@@ -1,0 +1,42 @@
+---
+- name: Check if Apache Directory Studio is already installed
+  stat:
+    path: /opt/ApacheDirectoryStudio
+  register: ads_installed
+
+- name: Install Apache Directory Studio
+  when: not ads_installed.stat.exists
+  block:
+    - name: Download archive
+      get_url:
+        url: http://ftp.man.poznan.pl/apache/directory/studio/{{ apache_directory_studio_version }}/ApacheDirectoryStudio-{{ apache_directory_studio_version }}-linux.gtk.x86_64.tar.gz
+        dest: /tmp/apache-directory-studio.tar.gz
+        checksum: md5:{{ apache_directory_studio_checksum }}
+    - name: Unpack archive
+      unarchive:
+        remote_src: yes
+        src: /tmp/apache-directory-studio.tar.gz
+        dest: /opt
+  always:
+    - name: Remove archive
+      file:
+        path: /tmp/apache-directory-studio.tar.gz
+        state: absent
+
+- name: Create launcher
+  copy:
+    dest: /usr/share/applications/apache-directory-studio.desktop
+    content: |
+      [Desktop Entry]
+      Name=Apache Directory Studio
+      GenericName=LDAP manager
+      Exec=/opt/ApacheDirectoryStudio/ApacheDirectoryStudio
+      Icon=/opt/ApacheDirectoryStudio/icon.xpm
+      Type=Application
+      StartupNotify=true
+      X-Desktop-File-Install-Version=0.23
+  register: launcher
+
+- name: Install launcher
+  command: desktop-file-install /usr/share/applications/apache-directory-studio.desktop
+  when: launcher | changed

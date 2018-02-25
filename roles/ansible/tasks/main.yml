@@ -1,0 +1,7 @@
+---
+- name: Install Ansible
+  dnf:
+   name:
+     - ansible
+     - libselinux-python
+   state: present

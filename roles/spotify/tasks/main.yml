@@ -1,0 +1,15 @@
+---
+- name: Configure Negativo17 Spotify repository
+  get_url:
+    url: https://negativo17.org/repos/fedora-spotify.repo
+    dest: /etc/yum.repos.d/fedora-spotify.repo
+
+- name: Import GPG key
+  rpm_key:
+    key: https://negativo17.org/repos/RPM-GPG-KEY-slaanesh
+    state: present
+
+- name: Install Spotify
+  dnf:
+    name: spotify
+    state: present

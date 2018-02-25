@@ -1,0 +1,11 @@
+---
+- name: Install Remmina
+  dnf:
+    name: remmina
+    state: present
+
+- name: Install Remmina plugins
+  dnf:
+    name: remmina-plugins-{{ item }}
+    state: present
+  with_items: '{{ remmina_plugins }}'

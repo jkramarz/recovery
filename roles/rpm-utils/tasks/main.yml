@@ -1,0 +1,7 @@
+---
+- name: Install RPM building utils
+  dnf:
+    name:
+      - rpm-build
+      - rpm-sign
+    state: present

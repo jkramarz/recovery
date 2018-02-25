@@ -1,0 +1,11 @@
+---
+- name: Install python devel
+  dnf:
+    name:
+      - python2-devel
+      - python2-pip
+
+- name: Install ds1054z
+  pip:
+    name: ds1054z
+    state: present

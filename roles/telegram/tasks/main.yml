@@ -1,0 +1,5 @@
+---
+- name: Install Telegram
+  dnf:
+    name: telegram-desktop
+    state: present

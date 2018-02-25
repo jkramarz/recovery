@@ -1,0 +1,6 @@
+---
+remmina_plugins:
+  - rdp
+  - vnc
+  - spice
+  - gnome

@@ -1,0 +1,18 @@
+---
+# enables smartcard use with gpg2
+- name: Install pcscd
+  dnf:
+    name: pcsc-lite
+    state: present
+
+- name: Enable pcscd
+  service:
+    name: pcscd
+    state: started
+    enabled: yes
+
+# provides udev configuration
+- name: Install ykpers
+  dnf:
+    name: ykpers
+    state: present

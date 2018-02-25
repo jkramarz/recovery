@@ -1,0 +1,5 @@
+---
+- name: Install Password Store
+  dnf:
+    name: pass
+    state: present

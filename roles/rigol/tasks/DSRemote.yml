@@ -1,0 +1,31 @@
+---
+- name: Install dependencies
+  dnf:
+    name:
+      - qt5-qtbase-devel
+      - gcc-c++
+    state: present
+
+- name: Clone DSRemote repository
+  git:
+    repo: https://github.com/Teuniz/DSRemote.git
+    dest: /usr/local/src/dsremote
+    version: a7eb6a1cac2e0adc0a8da0aa1f14f3fc1a6478c2
+
+- name: Run qtmake
+  command: qmake-qt5
+  args:
+    chdir: /usr/local/src/dsremote
+    creates: /usr/local/src/dsremote/Makefile
+
+- name: Run make
+  command: make
+  args:
+    chdir: /usr/local/src/dsremote
+    creates: /usr/local/src/dsremote/dsremote
+
+- name: Run make install
+  command: make install
+  args:
+    chdir: /usr/local/src/dsremote
+    creates: /usr/bin/dsremote

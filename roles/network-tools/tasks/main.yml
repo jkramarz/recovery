@@ -1,0 +1,24 @@
+---
+- name: Install nmap
+  dnf:
+    name:
+      - nmap
+      - nmap-ncat
+    state: present
+
+- name: Install zmap
+  dnf:
+    name: zmap
+    state: present
+
+- name: Install iperf
+  dnf:
+    name: iperf
+    state: present
+
+- name: Install Wireshark
+  dnf:
+    name:
+      - wireshark-cli
+      - wireshark-gtk
+    state: present

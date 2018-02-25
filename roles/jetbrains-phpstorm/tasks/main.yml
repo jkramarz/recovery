@@ -1,0 +1,7 @@
+---
+- name: Install PhpStorm
+  unarchive:
+    remote_src: yes
+    src: https://download.jetbrains.com/webide/PhpStorm-2017.3.4.tar.gz
+    dest: /opt/
+    creates: /opt/PhpStorm-173.4548.32
