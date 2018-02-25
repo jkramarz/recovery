@@ -1,0 +1,25 @@
+---
+- name: Check if TLP repository is configured
+  dnf:
+    list: tlp-release
+  register: tlp_release_installed
+
+- name: Configure TLP repository
+  when: (tlp_release_installed.results | selectattr("repo", "equalto", "@System") | list | length) == 0
+  block:
+  - name: Install TLP repository
+    dnf:
+      name: http://repo.linrunner.de/fedora/tlp/repos/releases/tlp-release.fc{{ ansible_distribution_major_version }}.noarch.rpm
+      state: present
+
+- name: Install tlp
+  dnf:
+    name:
+      - tlp
+      - tlp-rdw
+    state: present
+
+- name: Install acpi_call
+  dnf:
+    name:  akmod-acpi_call
+    state: present

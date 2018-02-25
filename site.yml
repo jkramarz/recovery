@@ -6,6 +6,14 @@
     - ansible
     - base
 
+- name: hw
+  hosts: all
+  become: yes
+  roles:
+    - name: tlp
+      when: '"ThinkPad" in ansible_product_version'
+    - smartmontools
+
 - name: sec
   hosts: all
   become: yes

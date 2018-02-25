@@ -1,0 +1,5 @@
+---
+- name: Install smartmontools
+  dnf:
+    name: smartmontools
+    state: present
